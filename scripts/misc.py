@@ -12,7 +12,7 @@ from xoa_driver.hlfuncs import mgmt
 import logging
 from typing_extensions import List, Any
 
-def get_port_list(tester: testers.L23Tester, port_pair_list: List[dict], key_str: str) -> List[Any]:
+def get_port_list(tester_obj: testers.L23Tester, port_pair_list: List[dict], key_str: str) -> List[Any]:
     _port_obj_list = []
     for port_pair in port_pair_list:
         _port_str = port_pair[key_str]
@@ -20,7 +20,7 @@ def get_port_list(tester: testers.L23Tester, port_pair_list: List[dict], key_str
         # Access module on the tester
         _mid = int(_port_str.split("/")[0])
         _pid = int(_port_str.split("/")[1])
-        module_obj = tester.modules.obtain(_mid)
+        module_obj = tester_obj.modules.obtain(_mid)
 
         if not isinstance(module_obj, modules.Z800FreyaModule):
             logging.info(f"This script is only for Freya module")
@@ -40,16 +40,16 @@ def get_port_list(tester: testers.L23Tester, port_pair_list: List[dict], key_str
 #         _value_list.append(_value)
 #     return _value_list
 
-async def reserve_reset_ports_in_list(tester: testers.L23Tester, port_obj_list: List[ports.Z800FreyaPort]) -> None:
+async def reserve_reset_ports_in_list(tester_obj: testers.L23Tester, port_obj_list: List[ports.Z800FreyaPort]) -> None:
     for _port in port_obj_list:
         _module_id = _port.kind.module_id
-        _module = tester.modules.obtain(_module_id)
+        _module = tester_obj.modules.obtain(_module_id)
         await mgmt.free_module(module=_module, should_free_ports=False)
         await mgmt.reserve_port(_port)
         await mgmt.reset_port(_port)
     await asyncio.sleep(1.0)
 
-async def release_ports_in_list(tester: testers.L23Tester, port_obj_list: List[ports.Z800FreyaPort]) -> None:
+async def release_ports_in_list(port_obj_list: List[ports.Z800FreyaPort]) -> None:
     for _port in port_obj_list:
         await mgmt.free_port(_port)
     await asyncio.sleep(1.0)
@@ -86,7 +86,7 @@ def beautify_hex(hex_str):
         b_hex_str = b_hex_str + hex_str[i:i+2] + " "
     return b_hex_str
 
-async def get_tcvr_vendor_name(tester: testers.L23Tester, port_obj: ports.Z800FreyaPort) -> dict:
+async def get_tcvr_vendor_name(port_obj: ports.Z800FreyaPort) -> dict:
     description = "Vendor Name"
     page_address = 0x00
     byte_address = 129
@@ -105,7 +105,7 @@ async def get_tcvr_vendor_name(tester: testers.L23Tester, port_obj: ports.Z800Fr
     }
     return result
 
-async def get_tcvr_vendor_pn(tester: testers.L23Tester, port_obj: ports.Z800FreyaPort) -> dict:
+async def get_tcvr_vendor_pn(port_obj: ports.Z800FreyaPort) -> dict:
     description = "Vendor P/N"
     page_address = 0x00
     byte_address = 148
@@ -124,7 +124,7 @@ async def get_tcvr_vendor_pn(tester: testers.L23Tester, port_obj: ports.Z800Frey
     }
     return result
 
-async def get_tcvr_vendor_sn(tester: testers.L23Tester, port_obj: ports.Z800FreyaPort) -> dict:
+async def get_tcvr_vendor_sn(port_obj: ports.Z800FreyaPort) -> dict:
     description = "Vendor S/N"
     page_address = 0x00
     byte_address = 166
@@ -143,7 +143,7 @@ async def get_tcvr_vendor_sn(tester: testers.L23Tester, port_obj: ports.Z800Frey
     }
     return result
 
-async def get_tcvr_cable_length(tester: testers.L23Tester, port_obj: ports.Z800FreyaPort) -> dict:
+async def get_tcvr_cable_length(port_obj: ports.Z800FreyaPort) -> dict:
     description = "Cable Length"
     page_address = 0x00
     byte_address = 202

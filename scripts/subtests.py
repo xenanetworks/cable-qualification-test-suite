@@ -36,17 +36,17 @@ async def prbs_test(chassis: str, username: str, port_pair_list: List[dict], rep
 
     # Establish connection to a Xena tester using Python context manager
     # The connection will be automatically terminated when it is out of the block
-    async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester:
+    async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester_obj:
         logger.info(f"=============== PRBS BER Test - Start ====================")
         logger.info(f"{'Connect to chassis:':<20}{chassis}")
         logger.info(f"{'Username:':<20}{username}")
         
         # Reserve and reset ports
         logger.info(f"Reserve and reset ports")
-        tx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester, port_pair_list, "tx")
-        rx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester, port_pair_list, "rx")
-        await reserve_reset_ports_in_list(tester, tx_port_list)
-        await reserve_reset_ports_in_list(tester, rx_port_list)
+        tx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester_obj, port_pair_list, "tx")
+        rx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester_obj, port_pair_list, "rx")
+        await reserve_reset_ports_in_list(tester_obj, tx_port_list)
+        await reserve_reset_ports_in_list(tester_obj, rx_port_list)
         
         # Configure the PRBS polynomial on the TX ports, and statistics mode on the Rx ports, using command grouping.
         logger.info(f"Set PRBS polynomial on TX ports and statistics mode on RX ports")
@@ -127,8 +127,8 @@ async def prbs_test(chassis: str, username: str, port_pair_list: List[dict], rep
 
         # Release the ports
         logger.info(f"Release the ports")
-        await release_ports_in_list(tester, tx_port_list)
-        await release_ports_in_list(tester, rx_port_list)
+        await release_ports_in_list(tx_port_list)
+        await release_ports_in_list(rx_port_list)
 
         # The End
         logger.info(f"=============== PRBS BER Test - End =====================")
@@ -149,17 +149,17 @@ async def fec_test(chassis: str, username: str, port_pair_list: List[dict], repo
 
     # Establish connection to a Xena tester using Python context manager
     # The connection will be automatically terminated when it is out of the block
-    async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester:
+    async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester_obj:
         logger.info(f"=============== FEC BER Test - Start ====================")
         logger.info(f"{'Connect to chassis:':<20}{chassis}")
         logger.info(f"{'Username:':<20}{username}")
         
         # Reserve and reset ports
         logger.info(f"Reserve and reset ports")
-        tx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester, port_pair_list, "tx")
-        rx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester, port_pair_list, "rx")
-        await reserve_reset_ports_in_list(tester, tx_port_list)
-        await reserve_reset_ports_in_list(tester, rx_port_list)
+        tx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester_obj, port_pair_list, "tx")
+        rx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester_obj, port_pair_list, "rx")
+        await reserve_reset_ports_in_list(tester_obj, tx_port_list)
+        await reserve_reset_ports_in_list(tester_obj, rx_port_list)
         
         # Enable FEC on TX ports
         logger.info(f"Enable FEC on TX ports")
@@ -202,8 +202,8 @@ async def fec_test(chassis: str, username: str, port_pair_list: List[dict], repo
 
         # Release the ports
         logger.info(f"Release the ports")
-        await release_ports_in_list(tester, tx_port_list)
-        await release_ports_in_list(tester, rx_port_list)
+        await release_ports_in_list(tx_port_list)
+        await release_ports_in_list(rx_port_list)
 
         # The End
         logger.info(f"=============== FEC BER Test - End =====================")
@@ -221,40 +221,40 @@ async def tcvr_basic_info(chassis: str, username: str, port_pair_list: List[dict
 
     # Establish connection to a Xena tester using Python context manager
     # The connection will be automatically terminated when it is out of the block
-    async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester:
+    async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester_obj:
         logger.info(f"=============== Read Transceiver Info - Start ====================")
         logger.info(f"{'Connect to chassis:':<20}{chassis}")
         logger.info(f"{'Username:':<20}{username}")
         
         # Reserve and reset ports
         logger.info(f"Reserve and reset ports")
-        tx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester, port_pair_list, "tx")
-        rx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester, port_pair_list, "rx")
-        await reserve_reset_ports_in_list(tester, tx_port_list)
-        await reserve_reset_ports_in_list(tester, rx_port_list)
+        tx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester_obj, port_pair_list, "tx")
+        rx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester_obj, port_pair_list, "rx")
+        await reserve_reset_ports_in_list(tester_obj, tx_port_list)
+        await reserve_reset_ports_in_list(tester_obj, rx_port_list)
 
         # Read TX ports transceiver info
         logger.info(f"Read TX ports transceiver info")
         for tx_port_obj in tx_port_list:
-            result = await get_tcvr_vendor_name(tester, tx_port_obj)
+            result = await get_tcvr_vendor_name(tx_port_obj)
             report_gen.record_data(port_name=f"Port {tx_port_obj.kind.module_id}/{tx_port_obj.kind.port_id}", description=result["description"], ascii_value=result["acsii_value"], raw_value=result["hex_value"])
-            result = await get_tcvr_vendor_pn(tester, tx_port_obj)
+            result = await get_tcvr_vendor_pn(tx_port_obj)
             report_gen.record_data(port_name=f"Port {tx_port_obj.kind.module_id}/{tx_port_obj.kind.port_id}", description=result["description"], ascii_value=result["acsii_value"], raw_value=result["hex_value"])
-            result = await get_tcvr_vendor_sn(tester, tx_port_obj)
+            result = await get_tcvr_vendor_sn(tx_port_obj)
             report_gen.record_data(port_name=f"Port {tx_port_obj.kind.module_id}/{tx_port_obj.kind.port_id}", description=result["description"], ascii_value=result["acsii_value"], raw_value=result["hex_value"])
-            result = await get_tcvr_cable_length(tester, tx_port_obj)
+            result = await get_tcvr_cable_length(tx_port_obj)
             report_gen.record_data(port_name=f"Port {tx_port_obj.kind.module_id}/{tx_port_obj.kind.port_id}", description=result["description"], ascii_value=result["acsii_value"], raw_value=result["hex_value"])
         
         # Read RX ports transceiver info
         logger.info(f"Read RX ports transceiver info")
         for rx_port_obj in rx_port_list:
-            result = await get_tcvr_vendor_name(tester, rx_port_obj)
+            result = await get_tcvr_vendor_name(rx_port_obj)
             report_gen.record_data(port_name=f"Port {rx_port_obj.kind.module_id}/{rx_port_obj.kind.port_id}", description=result["description"], ascii_value=result["acsii_value"], raw_value=result["hex_value"])
-            result = await get_tcvr_vendor_pn(tester, rx_port_obj)
+            result = await get_tcvr_vendor_pn(rx_port_obj)
             report_gen.record_data(port_name=f"Port {rx_port_obj.kind.module_id}/{rx_port_obj.kind.port_id}", description=result["description"], ascii_value=result["acsii_value"], raw_value=result["hex_value"])
-            result = await get_tcvr_vendor_sn(tester, rx_port_obj)
+            result = await get_tcvr_vendor_sn(rx_port_obj)
             report_gen.record_data(port_name=f"Port {rx_port_obj.kind.module_id}/{rx_port_obj.kind.port_id}", description=result["description"], ascii_value=result["acsii_value"], raw_value=result["hex_value"])
-            result = await get_tcvr_cable_length(tester, rx_port_obj)
+            result = await get_tcvr_cable_length(rx_port_obj)
             report_gen.record_data(port_name=f"Port {rx_port_obj.kind.module_id}/{rx_port_obj.kind.port_id}", description=result["description"], ascii_value=result["acsii_value"], raw_value=result["hex_value"])
 
         # Generate report
@@ -263,8 +263,8 @@ async def tcvr_basic_info(chassis: str, username: str, port_pair_list: List[dict
 
         # Release the ports
         logger.info(f"Release the ports")
-        await release_ports_in_list(tester, tx_port_list)
-        await release_ports_in_list(tester, rx_port_list)
+        await release_ports_in_list(tx_port_list)
+        await release_ports_in_list(rx_port_list)
 
         # The End
         logger.info(f"=============== Read Transceiver Info - End =====================")
@@ -292,7 +292,7 @@ async def latency_frame_loss_test(chassis: str, username: str, port_pair_list: L
 
     # Establish connection to a Xena tester using Python context manager
     # The connection will be automatically terminated when it is out of the block
-    async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester:
+    async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester_obj:
         logger.info(f"=============== Frame Loss Test - Start ====================")
         logger.info(f"{'Connect to chassis:':<20}{chassis}")
         logger.info(f"{'Username:':<20}{username}")
@@ -308,11 +308,11 @@ async def latency_frame_loss_test(chassis: str, username: str, port_pair_list: L
         logger.info(f"Total tests: {len(traffic_rates)*len(packet_sizes)}")
 
         # Reserve and reset ports
-        tx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester, port_pair_list, "tx")
-        rx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester, port_pair_list, "rx")
+        tx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester_obj, port_pair_list, "tx")
+        rx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester_obj, port_pair_list, "rx")
         logger.info(f"Reserve and reset ports")
-        await reserve_reset_ports_in_list(tester, tx_port_list)
-        await reserve_reset_ports_in_list(tester, rx_port_list)
+        await reserve_reset_ports_in_list(tester_obj, tx_port_list)
+        await reserve_reset_ports_in_list(tester_obj, rx_port_list)
         await asyncio.sleep(1.0)
         
         i = 0
@@ -398,8 +398,8 @@ async def latency_frame_loss_test(chassis: str, username: str, port_pair_list: L
 
         # Release the ports
         logger.info(f"Release the ports")
-        await release_ports_in_list(tester, tx_port_list)
-        await release_ports_in_list(tester, rx_port_list)
+        await release_ports_in_list(tx_port_list)
+        await release_ports_in_list(rx_port_list)
 
         # The End
         logger.info(f"=============== Frame Loss Test - End =====================")
@@ -414,17 +414,17 @@ async def siv_info(chassis: str, username: str, port_pair_list: List[dict], logg
 
     # Establish connection to a Xena tester using Python context manager
     # The connection will be automatically terminated when it is out of the block
-    async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester:
+    async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester_obj:
         logger.info(f"=============== Signal Integrity - Start ====================")
         logger.info(f"{'Connect to chassis:':<20}{chassis}")
         logger.info(f"{'Username:':<20}{username}")
         
         # Reserve and reset ports
         logger.info(f"Reserve and reset ports")
-        tx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester, port_pair_list, "tx")
-        rx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester, port_pair_list, "rx")
-        await reserve_reset_ports_in_list(tester, tx_port_list)
-        await reserve_reset_ports_in_list(tester, rx_port_list)
+        tx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester_obj, port_pair_list, "tx")
+        rx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester_obj, port_pair_list, "rx")
+        await reserve_reset_ports_in_list(tester_obj, tx_port_list)
+        await reserve_reset_ports_in_list(tester_obj, rx_port_list)
 
         # Merge TX and RX port list
         total_port_list = list(set(tx_port_list + rx_port_list))
@@ -545,3 +545,34 @@ async def siv_info(chassis: str, username: str, port_pair_list: List[dict], logg
                     plt.close(fig)
 
                     break
+
+#---------------------------
+# change_module_media
+#---------------------------
+async def change_module_media(chassis: str, username: str, module_list: List[int], media: enums.MediaConfigurationType, port_speed: str, logger_name: str) -> None:
+
+    # Get logger
+    logger = logging.getLogger(logger_name)
+
+    # Establish connection to a Xena tester using Python context manager
+    # The connection will be automatically terminated when it is out of the block
+    async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester_obj:
+        logger.info(f"=============== Change Module Media and Port Speed ====================")
+        logger.info(f"{'Connect to chassis:':<20}{chassis}")
+        logger.info(f"{'Username:':<20}{username}")
+        logger.info(f"{'Media:':<20}{media.name}")
+        logger.info(f"{'Port Speed:':<20}{port_speed}")
+
+        _port_count = int(port_speed.split("x")[0])
+        _port_speed = int(port_speed.split("x")[1].replace("G", ""))
+        _port_speed_config = [_port_speed*1000] * _port_count
+        _port_speed_config.insert(0, _port_count)
+        print(_port_speed_config)
+        for _module_id in module_list:
+            _module = tester_obj.modules.obtain(_module_id)
+            await mgmt.free_module(module=_module, should_free_ports=True)
+            await mgmt.reserve_module(module=_module)
+            await _module.media.set(media_config=media)
+            await _module.cfp.config.set(portspeed_list=_port_speed_config)
+
+        logger.info(f"=============== Done ====================")
