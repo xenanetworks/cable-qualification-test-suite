@@ -293,7 +293,7 @@ async def latency_frame_loss_test(chassis: str, username: str, port_pair_list: L
     # Establish connection to a Xena tester using Python context manager
     # The connection will be automatically terminated when it is out of the block
     async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester_obj:
-        logger.info(f"=============== Frame Loss Test - Start ====================")
+        logger.info(f"=============== Latency & Frame Loss Test - Start ====================")
         logger.info(f"{'Connect to chassis:':<20}{chassis}")
         logger.info(f"{'Username:':<20}{username}")
         logger.info(f"Test configuration:")
@@ -334,7 +334,7 @@ async def latency_frame_loss_test(chassis: str, username: str, port_pair_list: L
                     await utils.apply(
                         stream_obj.tpld_id.set(test_payload_identifier=tpld_id),
                         stream_obj.enable.set_on(),
-                        stream_obj.comment.set(comment=f"Frame Loss Test Stream ({stream_index}/{tpld_id})"),
+                        stream_obj.comment.set(comment=f"Latency and Frame Loss Test Stream ({stream_index}/{tpld_id})"),
                         stream_obj.payload.content.set(payload_type=enums.PayloadType.INCREMENTING, hex_data=Hex("DEAD")),
                         stream_obj.rate.pps.set(stream_rate_pps=int(1_000_000*traffic_rate)),
                         stream_obj.packet.length.set(length_type=enums.LengthType.FIXED, min_val=packet_size, max_val=packet_size),
@@ -402,7 +402,7 @@ async def latency_frame_loss_test(chassis: str, username: str, port_pair_list: L
         await release_ports_in_list(rx_port_list)
 
         # The End
-        logger.info(f"=============== Frame Loss Test - End =====================")
+        logger.info(f"=============== Latency & Frame Loss Test - End =====================")
 
 #---------------------------
 # siv_info
@@ -425,6 +425,8 @@ async def siv_info(chassis: str, username: str, port_pair_list: List[dict], logg
         rx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester_obj, port_pair_list, "rx")
         await reserve_reset_ports_in_list(tester_obj, tx_port_list)
         await reserve_reset_ports_in_list(tester_obj, rx_port_list)
+
+        await asyncio.sleep(3.0)
 
         # Merge TX and RX port list
         total_port_list = list(set(tx_port_list + rx_port_list))
@@ -515,36 +517,38 @@ async def siv_info(chassis: str, username: str, port_pair_list: List[dict], logg
                         # add base slicer (this is always at 0)
                         y = 0
                         siv_subplots[i].axhline(y, color='black', linestyle='-', linewidth=0.5)
-                        siv_subplots[i].text(siv_subplots[i].get_xlim()[1] + 0.1, y, f'b={y}', fontsize="small")
+                        siv_subplots[i].text(siv_subplots[i].get_xlim()[1] + 0.1, y, f'B={y}', fontsize="small")
                         # add upper slicer <p2>
                         y = siv_int_levels[1]
                         siv_subplots[i].axhline(y, color='green', linestyle='dashed', linewidth=0.5)
-                        siv_subplots[i].text(siv_subplots[i].get_xlim()[1] + 0.1, y, f's={y}', fontsize="small")
+                        siv_subplots[i].text(siv_subplots[i].get_xlim()[1] + 0.1, y, f'S={y}', fontsize="small")
                         # add lower slicer <m2>
                         y = siv_int_levels[4]
                         siv_subplots[i].axhline(y, color='green', linestyle='dashed', linewidth=0.5)
-                        siv_subplots[i].text(siv_subplots[i].get_xlim()[1] + 0.1, y, f's={y}', fontsize="small")
+                        siv_subplots[i].text(siv_subplots[i].get_xlim()[1] + 0.1, y, f'S={y}', fontsize="small")
                         # add average level 3 <p3>
                         y = siv_int_levels[2]
                         siv_subplots[i].axhline(y, color='black', linestyle='dashed', linewidth=0.1)
-                        siv_subplots[i].text(siv_subplots[i].get_xlim()[1] + 0.1, y, f'l3={y}', fontsize="small")
+                        siv_subplots[i].text(siv_subplots[i].get_xlim()[1] + 0.1, y, f'L3={y}', fontsize="small")
                         # add average level 2 <p1>
                         y = siv_int_levels[0]
                         siv_subplots[i].axhline(y, color='black', linestyle='dashed', linewidth=0.1)
-                        siv_subplots[i].text(siv_subplots[i].get_xlim()[1] + 0.1, y, f'l2={y}', fontsize="small")
+                        siv_subplots[i].text(siv_subplots[i].get_xlim()[1] + 0.1, y, f'L2={y}', fontsize="small")
                         # add average level 1 <m3>
                         y = siv_int_levels[5]
                         siv_subplots[i].axhline(y, color='black', linestyle='dashed', linewidth=0.1)
-                        siv_subplots[i].text(siv_subplots[i].get_xlim()[1] + 0.1, y, f'l1={y}', fontsize="small")
+                        siv_subplots[i].text(siv_subplots[i].get_xlim()[1] + 0.1, y, f'L1={y}', fontsize="small")
                         # add average level 0 <m1>
                         y = siv_int_levels[3]
                         siv_subplots[i].axhline(y, color='black', linestyle='dashed', linewidth=0.1)
-                        siv_subplots[i].text(siv_subplots[i].get_xlim()[1] + 0.1, y, f'l0={y}', fontsize="small")
+                        siv_subplots[i].text(siv_subplots[i].get_xlim()[1] + 0.1, y, f'L0={y}', fontsize="small")
                         
                     plt.savefig(f"port_{port_obj.kind.module_id}{port_obj.kind.port_id}_siv_plot.png")
                     plt.close(fig)
 
                     break
+            
+            await asyncio.sleep(3.0)
 
 #---------------------------
 # change_module_media
@@ -567,7 +571,6 @@ async def change_module_media(chassis: str, username: str, module_list: List[int
         _port_speed = int(port_speed.split("x")[1].replace("G", ""))
         _port_speed_config = [_port_speed*1000] * _port_count
         _port_speed_config.insert(0, _port_count)
-        print(_port_speed_config)
         for _module_id in module_list:
             _module = tester_obj.modules.obtain(_module_id)
             await mgmt.free_module(module=_module, should_free_ports=True)

@@ -9,14 +9,10 @@ This document describes the methodology for testing the cable qualification test
 -----------
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     :caption: Table of Content
 
     step_by_step
-    tcvr_info
-    fec_ber_test
-    prbs_ber_test
-    latency_frameloss_test
-    siv_info
+    cable_qualification_test/index
 
 
