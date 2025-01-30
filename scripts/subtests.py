@@ -25,6 +25,7 @@ from collections import deque
 async def prbs_test(chassis: str, username: str, password: str, tcp_port: int, port_pair_list: List[dict], report_filename: str, logger_name: str, test_config: dict) -> None:
     # Init report generator
     report_gen = PRBSReportGenerator()
+    report_gen.chassis = chassis
 
     # Get logger
     logger = logging.getLogger(logger_name)
@@ -139,6 +140,7 @@ async def fec_test(chassis: str, username: str, password: str, tcp_port: int, po
     
     # Init report generator
     report_gen = FECReportGenerator()
+    report_gen.chassis = chassis
 
     # Get logger
     logger = logging.getLogger(logger_name)
@@ -214,6 +216,7 @@ async def tcvr_basic_info(chassis: str, username: str, password: str, tcp_port: 
 
     # Init report generator
     report_gen = TransceiverReportGenerator()
+    report_gen.chassis = chassis
 
     # Get logger
     logger = logging.getLogger(logger_name)
@@ -277,6 +280,7 @@ async def latency_frame_loss_test(chassis: str, username: str, password: str, tc
 
     # Init report generator
     report_gen = LatencyFrameLossReportGenerator()
+    report_gen.chassis = chassis
 
     # Get logger
     logger = logging.getLogger(logger_name)
@@ -386,7 +390,7 @@ async def latency_frame_loss_test(chassis: str, username: str, password: str, tc
                     logging.info(f"  Frame Loss: {_frame_loss}")
                     logging.info(f"  Latency   : {_latency} ns")
                     logging.info(f"  Jitter    : {_jitter} ns")
-                    report_gen.record_data(port_name=f"Port {tx_port_obj.kind.module_id}/{tx_port_obj.kind.port_id}", description=_description, traffic_rate=float(traffic_rate), packet_size=packet_size, frame_loss=_frame_loss, latency=_latency, jitter=_jitter)
+                    report_gen.record_data(port_name=_description, description=_description, traffic_rate=float(traffic_rate), packet_size=packet_size, frame_loss=_frame_loss, latency=_latency, jitter=_jitter)
                 for tx_port_obj in tx_port_list:
                     await tx_port_obj.streams.obtain(0).delete()
                 i += 1    
