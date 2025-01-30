@@ -13,5 +13,14 @@ Method
 
 1. Enable FEC on TX ports.
 2. Clear FEC counters.
-3. Measure pre-FEC BER and post-FEC BER on RX ports.
+3. Measure **pre-FEC BER** and **post-FEC BER** on RX ports.
 4. Report the time-series data of the pre-FEC BER and post-FEC BER.
+
+Output Example
+----------------
+
+.. figure:: images/fec_image.png
+    :alt: FEC BER Example
+    :target: images/fec_image.png
+
+    FEC BER Example

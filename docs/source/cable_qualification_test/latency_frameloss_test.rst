@@ -18,7 +18,16 @@ Method
 
 1. Create an Ethernet stream with a packet size.
 2. Start traffic with the start rate.
-3. Measure latency and frame loss.
+3. Measure **aggregated average latency**, **aggregated average jitter** and **frame loss**.
 4. Increase traffic rate by step size.
 5. Repeat steps 2-3 until the end rate is reached.
 6. Repeat the above for each packet size.
+
+Output Example
+----------------
+
+.. figure:: images/latency_frameloss_plot.png
+    :alt: Latency & Frame Loss Example
+    :target: images/latency_frameloss_plot.png
+
+    Latency & Frame Loss Example
