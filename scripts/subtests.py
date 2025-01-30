@@ -16,14 +16,13 @@ from typing_extensions import List, Any
 from misc import *
 from reportgen import *
 from decimal import Decimal, getcontext
-import math
 import matplotlib.pyplot as plt
 from collections import deque
 
 #---------------------------
 # prbs_test
 #---------------------------
-async def prbs_test(chassis: str, username: str, port_pair_list: List[dict], report_filename: str, logger_name: str, test_config: dict) -> None:
+async def prbs_test(chassis: str, username: str, password: str, tcp_port: int, port_pair_list: List[dict], report_filename: str, logger_name: str, test_config: dict) -> None:
     # Init report generator
     report_gen = PRBSReportGenerator()
 
@@ -36,7 +35,7 @@ async def prbs_test(chassis: str, username: str, port_pair_list: List[dict], rep
 
     # Establish connection to a Xena tester using Python context manager
     # The connection will be automatically terminated when it is out of the block
-    async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester_obj:
+    async with testers.L23Tester(host=chassis, username=username, password=password, port=tcp_port, enable_logging=False) as tester_obj:
         logger.info(f"=============== PRBS BER Test - Start ====================")
         logger.info(f"{'Connect to chassis:':<20}{chassis}")
         logger.info(f"{'Username:':<20}{username}")
@@ -136,7 +135,7 @@ async def prbs_test(chassis: str, username: str, port_pair_list: List[dict], rep
 #---------------------------
 # fec_test
 #---------------------------
-async def fec_test(chassis: str, username: str, port_pair_list: List[dict], report_filename: str, logger_name: str, test_config: dict) -> None:
+async def fec_test(chassis: str, username: str, password: str, tcp_port: int, port_pair_list: List[dict], report_filename: str, logger_name: str, test_config: dict) -> None:
     
     # Init report generator
     report_gen = FECReportGenerator()
@@ -149,7 +148,7 @@ async def fec_test(chassis: str, username: str, port_pair_list: List[dict], repo
 
     # Establish connection to a Xena tester using Python context manager
     # The connection will be automatically terminated when it is out of the block
-    async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester_obj:
+    async with testers.L23Tester(host=chassis, username=username, password=password, port=tcp_port, enable_logging=False) as tester_obj:
         logger.info(f"=============== FEC BER Test - Start ====================")
         logger.info(f"{'Connect to chassis:':<20}{chassis}")
         logger.info(f"{'Username:':<20}{username}")
@@ -211,7 +210,7 @@ async def fec_test(chassis: str, username: str, port_pair_list: List[dict], repo
 #---------------------------
 # tcvr_basic_info
 #---------------------------
-async def tcvr_basic_info(chassis: str, username: str, port_pair_list: List[dict], report_filename: str, logger_name: str) -> None:
+async def tcvr_basic_info(chassis: str, username: str, password: str, tcp_port: int, port_pair_list: List[dict], report_filename: str, logger_name: str) -> None:
 
     # Init report generator
     report_gen = TransceiverReportGenerator()
@@ -221,7 +220,7 @@ async def tcvr_basic_info(chassis: str, username: str, port_pair_list: List[dict
 
     # Establish connection to a Xena tester using Python context manager
     # The connection will be automatically terminated when it is out of the block
-    async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester_obj:
+    async with testers.L23Tester(host=chassis, username=username, password=password, port=tcp_port, enable_logging=False) as tester_obj:
         logger.info(f"=============== Read Transceiver Info - Start ====================")
         logger.info(f"{'Connect to chassis:':<20}{chassis}")
         logger.info(f"{'Username:':<20}{username}")
@@ -272,7 +271,7 @@ async def tcvr_basic_info(chassis: str, username: str, port_pair_list: List[dict
 #---------------------------
 # latency_frame_loss_test
 #---------------------------
-async def latency_frame_loss_test(chassis: str, username: str, port_pair_list: List[dict], report_filename: str, logger_name: str, test_config: dict) -> None:
+async def latency_frame_loss_test(chassis: str, username: str, password: str, tcp_port: int, port_pair_list: List[dict], report_filename: str, logger_name: str, test_config: dict) -> None:
 
     getcontext().prec = 6
 
@@ -292,7 +291,7 @@ async def latency_frame_loss_test(chassis: str, username: str, port_pair_list: L
 
     # Establish connection to a Xena tester using Python context manager
     # The connection will be automatically terminated when it is out of the block
-    async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester_obj:
+    async with testers.L23Tester(host=chassis, username=username, password=password, port=tcp_port, enable_logging=False) as tester_obj:
         logger.info(f"=============== Latency & Frame Loss Test - Start ====================")
         logger.info(f"{'Connect to chassis:':<20}{chassis}")
         logger.info(f"{'Username:':<20}{username}")
@@ -407,14 +406,14 @@ async def latency_frame_loss_test(chassis: str, username: str, port_pair_list: L
 #---------------------------
 # siv_info
 #---------------------------
-async def siv_info(chassis: str, username: str, port_pair_list: List[dict], logger_name: str) -> None:
+async def siv_info(chassis: str, username: str, password: str, tcp_port: int, port_pair_list: List[dict], logger_name: str) -> None:
 
     # Get logger
     logger = logging.getLogger(logger_name)
 
     # Establish connection to a Xena tester using Python context manager
     # The connection will be automatically terminated when it is out of the block
-    async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester_obj:
+    async with testers.L23Tester(host=chassis, username=username, password=password, port=tcp_port, enable_logging=False) as tester_obj:
         logger.info(f"=============== Signal Integrity - Start ====================")
         logger.info(f"{'Connect to chassis:':<20}{chassis}")
         logger.info(f"{'Username:':<20}{username}")
@@ -553,14 +552,14 @@ async def siv_info(chassis: str, username: str, port_pair_list: List[dict], logg
 #---------------------------
 # change_module_media
 #---------------------------
-async def change_module_media(chassis: str, username: str, module_list: List[int], media: enums.MediaConfigurationType, port_speed: str, logger_name: str) -> None:
+async def change_module_media(chassis: str, username: str, password: str, tcp_port: int, module_list: List[int], media: enums.MediaConfigurationType, port_speed: str, logger_name: str) -> None:
 
     # Get logger
     logger = logging.getLogger(logger_name)
 
     # Establish connection to a Xena tester using Python context manager
     # The connection will be automatically terminated when it is out of the block
-    async with testers.L23Tester(host=chassis, username=username, password="xena", port=22606, enable_logging=False) as tester_obj:
+    async with testers.L23Tester(host=chassis, username=username, password=password, port=tcp_port, enable_logging=False) as tester_obj:
         logger.info(f"=============== Change Module Media and Port Speed ====================")
         logger.info(f"{'Connect to chassis:':<20}{chassis}")
         logger.info(f"{'Username:':<20}{username}")
