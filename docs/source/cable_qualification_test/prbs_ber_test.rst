@@ -21,8 +21,8 @@ Method
 Output Example
 ----------------
 
-.. figure:: images/prbs_ber_plot.png
+.. figure:: images/prbs_image.png
     :alt: PRBS BER Example
-    :target: images/prbs_ber_plot.png
+    :target: images/prbs_image.png
 
     PRBS BER Example

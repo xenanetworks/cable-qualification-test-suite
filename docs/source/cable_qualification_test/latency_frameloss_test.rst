@@ -26,8 +26,8 @@ Method
 Output Example
 ----------------
 
-.. figure:: images/latency_frameloss_plot.png
+.. figure:: images/latency_frameloss_image.png
     :alt: Latency & Frame Loss Example
-    :target: images/latency_frameloss_plot.png
+    :target: images/latency_frameloss_image.png
 
     Latency & Frame Loss Example

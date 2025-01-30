@@ -16,8 +16,8 @@ Method
 Output Example
 ----------------
 
-.. figure:: images/siv_plot.png
+.. figure:: images/siv_image.png
     :alt: SIV Plot Example
-    :target: images/siv_plot.png
+    :target: images/siv_image.png
 
     SIV Plot Example

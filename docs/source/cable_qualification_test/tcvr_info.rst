@@ -20,8 +20,8 @@ Method
 Output Example
 ----------------
 
-.. figure:: images/tcvr_info.png
+.. figure:: images/tcvr_info_image.png
     :alt: Transceiver Information Example
-    :target: images/tcvr_info.png
+    :target: images/tcvr_info_image.png
 
     Transceiver Information Example
