@@ -24,11 +24,11 @@ from subtests import *
 # GLOBAL VARIABLES
 #---------------------------
 
-CHASSIS_IP = "10.165.136.60" # This is the IP address of the chassis
-USERNAME = "xoa"        # This is the username to login to the chassis
-PASSWORD = "xena"        # This is the password to login to the chassis
-TCPPORT= 22606          # This is the TCP port to login to the chassis
-REPORT_FILENAME = "cable_qualification_test_report.csv"
+CHASSIS_IP = "10.10.10.10"    # This is the IP address of the chassis
+USERNAME = "xoa"                # This is the username to login to the chassis and port reservation
+PASSWORD = "xena"               # This is the password to login to the chassis
+TCPPORT= 22606                  # This is the TCP port to login to the chassis
+REPORT_FILENAME = "cable_qualification_test_report.csv" # This is the filename of the report
 
 MODULE_LIST = [3, 6]    # This is the list of modules to be used in the test
 PORT_PAIRS = [
