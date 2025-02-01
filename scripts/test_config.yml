@@ -1,0 +1,24 @@
+test_config:
+  module_list:
+    - 3
+    - 6
+  port_speed: "1x800G"
+  module_media_tga: "QSFPDD800"
+  module_media_l1: "QSFPDD800_ANLT"
+  port_pair_list:
+    - tx: "3/0"
+      rx: "6/0"
+  csv_report_filename: "cable_qualification_test_report.csv"
+  log_filename: "cable_qualification_test.log"
+  prbs_test_config:
+    duration: 10
+    polynomial: "PRBS31"
+  fec_test_config:
+    duration: 10
+  latency_frameloss_test_config:
+    duration: 10
+    start_rate: 0.1
+    end_rate: 1.0
+    step_rate: 0.1
+    packet_sizes:
+      - 64
