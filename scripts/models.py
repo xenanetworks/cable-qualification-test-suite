@@ -1,3 +1,7 @@
+# ***********************************************************************************************
+# this library file contains test configuration models for cable quality test
+# ***********************************************************************************************
+
 from pydantic import BaseModel
 
 class LatencyFrameLossTestConfig(BaseModel):
@@ -19,6 +23,10 @@ class PortPair(BaseModel):
     rx: str
 
 class CableQualificationTestConfig(BaseModel):
+    chassis_ip: str
+    username: str
+    password: str
+    tcp_port: int
     csv_report_filename: str
     log_filename: str
     module_list: list[int]

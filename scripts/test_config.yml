@@ -1,4 +1,8 @@
 test_config:
+  chassis_ip: "10.10.10.10"
+  username: "CableQualificationTest"
+  password: "xena"
+  tcp_port: 22606
   module_list:
     - 3
     - 6

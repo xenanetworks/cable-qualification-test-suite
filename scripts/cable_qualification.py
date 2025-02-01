@@ -2,38 +2,26 @@
 #
 #            CABLE QUALIFICATION TEST METHODOLOGY
 #
-# 
-#
 ################################################################
 
 import asyncio
 
 from xoa_driver import testers
-from xoa_driver import modules
-from xoa_driver import ports
 from xoa_driver import enums
-from xoa_driver import utils
-from xoa_driver.hlfuncs import mgmt
-from xoa_driver.misc import Hex
-from typing_extensions import List, Any
 from misc import *
-from scripts.subtests import *
+from subtests import *
 from models import *
 import yaml, json
 from pathlib import Path
-import logging, sys, os
+import logging
 
-#---------------------------
-# CableQualificationTest
-#---------------------------
+#-----------------------------
+# class CableQualificationTest
+#-----------------------------
 
 class CableQualificationTest:
-    def __init__(self, chassis: str, test_config_file: str, username: str = "CableQualificationTest", password: str = "xena", tcp_port: int = 22606, enable_logging: bool = False):
-        self.chassis = chassis
-        self.username = username
-        self.password = password
-        self.tcp_port = tcp_port
-        self.enable_logging = enable_logging
+    def __init__(self, test_config_file: str, enable_comm_trace: bool = False):
+        self.enable_comm_trace = enable_comm_trace
         self.test_config_file = test_config_file
         self.test_config: CableQualificationTestConfig
         self.tester_obj: testers.L23Tester
@@ -43,7 +31,7 @@ class CableQualificationTest:
         self.load_test_config(str(file_path))
 
     async def connect(self):
-        self.tester_obj = await testers.L23Tester(host=self.chassis, username=self.username, password=self.password, port=self.tcp_port, enable_logging=self.enable_logging)
+        self.tester_obj = await testers.L23Tester(host=self.chassis_ip, username=self.username, password=self.password, port=self.tcp_port, enable_logging=self.enable_comm_trace)
 
     async def disconnect(self):
         await self.tester_obj.session.logoff()
@@ -62,6 +50,22 @@ class CableQualificationTest:
                     logging.FileHandler(filename=self.log_filename, mode="a"),
                     logging.StreamHandler()]
                 )
+    
+    @property
+    def chassis_ip(self):
+        return self.test_config.chassis_ip
+    
+    @property
+    def username(self):
+        return self.test_config.username
+    
+    @property
+    def password(self):
+        return self.test_config.password
+    
+    @property
+    def tcp_port(self):
+        return self.test_config.tcp_port
     
     @property
     def port_pair_list(self):
@@ -153,7 +157,7 @@ class CableQualificationTest:
 async def main():
     stop_event = asyncio.Event()
     try:
-        test = CableQualificationTest("10.165.136.60", "test_config.yml")
+        test = CableQualificationTest("test_config.yml")
         await test.run()
     except KeyboardInterrupt:
         stop_event.set()
