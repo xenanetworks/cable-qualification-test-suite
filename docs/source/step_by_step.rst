@@ -18,6 +18,8 @@ Prerequisite
 
     * ``xoa-driver>=2.9.3``
     * ``matplotlib>=3.9.2``
+    * ``pyyaml>=6.0.1``
+    * ``pydantic>=2.10.6``
 
 .. seealso::
     
@@ -31,58 +33,106 @@ Prerequisite
 Run Test
 ---------
 
-1. Open the ``cable_qualification.py`` and change the global variables to match your setup.
+1. Open the ``/script/test_config.yml`` and change the configuraiton to match your setup.
+
+.. code-block:: yaml
+
+    test_config:
+        chassis_ip: "10.10.10.10"
+        username: "CableQualificationTest"
+        password: "xena"
+        tcp_port: 22606
+        module_list:
+            - 3
+            - 6
+        port_speed: "1x800G"
+        module_media_tga: "QSFPDD800"
+        module_media_l1: "QSFPDD800_ANLT"
+        port_pair_list:
+            - tx: "3/0"
+            rx: "6/0"
+        csv_report_filename: "cable_qualification_test_report.csv"
+        log_filename: "cable_qualification_test.log"
+        prbs_test_config:
+            duration: 10
+            polynomial: "PRBS31"
+        fec_test_config:
+            duration: 10
+        latency_frameloss_test_config:
+            duration: 10
+            start_rate: 0.1
+            end_rate: 1.0
+            step_rate: 0.1
+            packet_sizes:
+                - 64
+
+* ``chassis_ip``: IP address of the chassis.
+* ``username``: Username used to connect to the chassis. This name is also used to reserve the ports.
+* ``password``: Password used to connect to the chassis. Default password is "xena".
+* ``tcp_port``: TCP port used to connect to the chassis. Default port is 22606.
+* ``module_list``: List of modules that you use in the test.
+* ``port_speed``: Speed of the ports, allowed values are:
+
+  * "1x800G", "2x400G", "4x200G", "8x100G"
+  * "1x400G", "2x200G", "4x100G", "8x50G"
+
+* ``module_media_tga``: Media type of the module used by Latency and Frame Loss Test. Allowed values are:
+
+  * "QSFPDD800"
+  * "QSFP112"
+  * "OSFP800"
+  * "QSFPDD"
+
+* ``module_media_l1``: Media type of the module used by FEC BER test, PRBS test, and SIV information. Allowed values are:
+
+  * "QSFPDD800_ANLT"
+  * "QSFP112_ANLT"
+  * "OSFP800_ANLT"
+  * "QSFPDD_ANLT"
+
+* ``port_pair_list``: List of port pairs that you want to test. Each port pair should have a ``tx`` and ``rx`` port. The port format is ``<module>/<port>``.
+
+* ``csv_report_filename``: Name of the CSV report file.
+
+* ``log_filename``: Name of the log file.
+
+* ``prbs_test_config``: Configuration for the PRBS test.
+
+  * ``duration``: Duration of the test in seconds.
+  * ``polynomial``: PRBS polynomial used in the test. Allowed values are:
+
+    * "PRBS31"
+    * "PRBS13"
+
+* ``fec_test_config``: Configuration for the FEC BER test.
+
+  * ``duration``: Duration of the test in seconds.
+
+* ``latency_frameloss_test_config``: Configuration for the Latency and Frame Loss Test.
+
+  * ``duration``: Duration of the test in seconds.
+  * ``start_rate``: Start rate of the test in fraction.
+  * ``end_rate``: End rate of the test in fraction.
+  * ``step_rate``: Step rate of the test in fraction.
+  * ``packet_sizes``: List of packet sizes in bytes used in the test.
+
+2. Open the ``cable_qualification.py``. An example of how to use the ``class CableQualificationTest`` is show in ``main()`` function. You can modify the ``main()`` function to match your setup. You can also import ``class CableQualificationTest`` into your own script and use it to run the test.
 
 .. code-block:: python
 
-    #---------------------------
-    # GLOBAL VARIABLES
-    #---------------------------
+    async def main():
+        stop_event = asyncio.Event()
+        try:
+            test = CableQualificationTest("test_config.yml")
+            await test.run()
+        except KeyboardInterrupt:
+            stop_event.set()
 
-    CHASSIS_IP = "10.10.10.10"    # This is the IP address of the chassis
-    USERNAME = "xoa"                # This is the username to login to the chassis and port reservation
-    PASSWORD = "xena"               # This is the password to login to the chassis
-    TCPPORT= 22606                  # This is the TCP port to login to the chassis
-    REPORT_FILENAME = "cable_qualification_test_report.csv" # This is the filename of the report
+    if __name__ == "__main__":
+        asyncio.run(main())
 
-    MODULE_LIST = [3, 6]    # This is the list of modules to be used in the test
-    PORT_PAIRS = [
-        {"tx": "3/0", "rx": "6/0"}, # This is the port pair to be tested
-        {"tx": "3/1", "rx": "6/1"}, # This is the port pair to be tested
-    ]
-
-    PRBS_TEST_CONFIG = {
-        "duration": 10,                             # Duration of the test in seconds
-        "polynomial": enums.PRBSPolynomial.PRBS31,  # PRBS polynomial to be used
-        }
-    FEC_TEST_CONFIG = {
-        "duration": 10,                             # Duration of the test in seconds
-        }
-    LATENCY_FRAMELOSS_TEST_CONFIG = {
-        "start_rate": 0.1,                          # Start traffic rate (0.1 = 10%)
-        "end_rate": 1.0,                            # End traffic rate (1.0 = 100%)
-        "step_rate": 0.2,                           # Step traffic rate (0.1 = 10%)
-        "packet_sizes": [128],                      # Packet sizes to be tested (bytes)
-        "duration": 10,                             # Duration of each test in seconds
-        }
-
-
-* ``CHASSIS_IP``: This is the IP address of the chassis. Make sure to change it to match your setup.
-* ``USERNAME``: This is the username to login to the chassis. It is the username used for port reservation.
-* ``PASSWORD``: This is the password to login to the chassis. Default password is ``xena``. Change it if you have a different password.
-* ``TCPPORT``: This is the TCP port to login to the chassis. Default port is ``22606``. Change it if you have a different TCP port number.
-* ``REPORT_FILENAME``: This is the filename of the CSV report. Change it to the desired filename.
-
-* ``MODULE_LIST``: This is the list of modules to be used in the test. Change it to match your setup.
-* ``PORT_PAIRS``: This is the list of port pairs to be tested. One port pair is defined as unidirectionl topology in a dictionary with the ``tx`` and ``rx`` keys. Change it to match your setup.
-* ``PRBS_TEST_CONFIG``: This is the configuration for the PRBS test. It applies to all the port pairs. Change it to match your setup.
-* ``FEC_TEST_CONFIG``: This is the configuration for the FEC test. It applies to all the port pairs. Change it to match your setup.
-* ``LATENCY_FRAMELOSS_TEST_CONFIG``: This is the configuration for the Latency and Frame Loss test. It applies to all the port pairs. Change it to match your setup.
-
-
-
-2. Open a terminal/command prompot, go to the ``script/`` folder and run the script using the following command ``python cable_qualification.py``.
+3. Open a terminal/command prompot, go to the ``script/`` folder and run the script using the following command ``python cable_qualification.py``.
 
     * Your terminal will show the progress of the test and save the outputs into a log file.
     * The script will generate a CSV report file with the test results. The report will be saved in the same folder as the script.
-    * The script will also generate a SIV plot PNG file for all ports in the ``PORT_PAIRS``. The plot PNG files will be saved in the same folder as the script.
+    * The script will also generate a SIV plot PNG files for all ports in the ``PORT_PAIRS``. The plot PNG files will be saved ``script/`` folder.
