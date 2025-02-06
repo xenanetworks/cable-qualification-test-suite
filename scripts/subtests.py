@@ -335,7 +335,7 @@ async def latency_frame_loss_test(tester_obj: testers.L23Tester, port_pair_list:
                     stream_obj.enable.set_on(),
                     stream_obj.comment.set(comment=f"Latency and Frame Loss Test Stream ({stream_index}/{tpld_id})"),
                     stream_obj.payload.content.set(payload_type=enums.PayloadType.INCREMENTING, hex_data=Hex("DEAD")),
-                    stream_obj.rate.pps.set(stream_rate_pps=int(1_000_000*traffic_rate)),
+                    stream_obj.rate.fraction.set(stream_rate_ppm=int(1_000_000*traffic_rate)),
                     stream_obj.packet.length.set(length_type=enums.LengthType.FIXED, min_val=packet_size, max_val=packet_size),
                     stream_obj.packet.header.protocol.set(segments=[
                         enums.ProtocolOption.ETHERNET]),
