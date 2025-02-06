@@ -549,9 +549,9 @@ async def siv_info(tester_obj: testers.L23Tester, port_pair_list: List[dict], lo
                     siv_subplots[i].text(siv_subplots[i].get_xlim()[1] + 0.1, y, f'L0={y}', fontsize="small")
 
                 if should_histogram:    
-                    plt.savefig(f"port_{port_obj.kind.module_id}{port_obj.kind.port_id}_siv_sample.png")
-                else:
                     plt.savefig(f"port_{port_obj.kind.module_id}{port_obj.kind.port_id}_siv_histogram.png")
+                else:
+                    plt.savefig(f"port_{port_obj.kind.module_id}{port_obj.kind.port_id}_siv_sample.png")
                 plt.close(fig)
 
                 break
