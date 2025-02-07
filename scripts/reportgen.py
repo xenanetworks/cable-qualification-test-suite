@@ -170,3 +170,44 @@ class LatencyFrameLossReportGenerator:
                 for data in value:
                     dict_writer.writerow(data)
                 writer.writerow([])
+
+class TXTapReportGenerator:
+    def __init__(self):
+        self.name = "TX Tap Informaton"
+        self.chassis = "10.10.10.10"
+        self.fieldnames = ["Lane", "Pre3 (dB)", "Pre2 (dB)", "Pre (dB)", "Main (mV)", "Post (dB)"]
+        self.datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        self.database = {}
+
+    def record_data(self, port_name: str, lane: int, pre3_db: float, pre2_db: float, pre_db: float, main_mv: int, post_db: float) -> None:
+        time_str = time.strftime("%H:%M:%S", time.localtime())
+        if port_name not in self.database:
+            self.database[port_name] = []
+            self.database[port_name].append({
+                "Lane": lane,
+                "Pre3 (dB)": pre3_db,
+                "Pre2 (dB)": pre2_db,
+                "Pre (dB)": pre_db,
+                "Main (mV)": main_mv,
+                "Post (dB)": post_db,
+            })
+    
+    def generate_report(self, filename: str) -> None:
+        headers = [
+            ["*******************************************"],
+            ["Test:", self.name],
+            ["Chassis:", self.chassis],
+            ["Datetime:", self.datetime],
+            []
+        ]
+        with open(filename, 'a', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            for line in headers:
+                writer.writerow(line)
+            for key, value in self.database.items():
+                writer.writerow([key])
+                dict_writer = csv.DictWriter(csvfile, fieldnames=self.fieldnames)
+                dict_writer.writeheader()
+                for data in value:
+                    dict_writer.writerow(data)
+                writer.writerow([])
