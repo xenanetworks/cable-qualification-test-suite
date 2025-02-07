@@ -42,14 +42,16 @@ class CableQualificationTest:
             test_config_value = json.dumps(test_config_dict["test_config"])
             self.test_config = CableQualificationTestConfig.model_validate_json(test_config_value)
 
-            # configure basic logger
-            logging.basicConfig(
-                format="%(asctime)s  %(message)s",
-                level=logging.DEBUG,
-                handlers=[
-                    logging.FileHandler(filename=self.log_filename, mode="a"),
-                    logging.StreamHandler()]
-                )
+    async def create_report_dir(self):
+        self.path = await create_report_dir(self.tester_obj, self.port_pair_list)
+        # configure basic logger
+        logging.basicConfig(
+            format="%(asctime)s  %(message)s",
+            level=logging.DEBUG,
+            handlers=[
+                logging.FileHandler(filename=os.path.join(self.path, self.log_filename), mode="a"),
+                logging.StreamHandler()]
+            )
     
     @property
     def chassis_ip(self):
@@ -91,8 +93,8 @@ class CableQualificationTest:
         return enums.MediaConfigurationType[self.test_config.module_media_l1]
     
     @property
-    def report_filename(self):
-        return self.test_config.csv_report_filename
+    def report_filepathname(self):
+        return os.path.join(self.path, self.test_config.csv_report_filename)
     
     @property
     def log_filename(self):
@@ -115,33 +117,38 @@ class CableQualificationTest:
         return self.test_config.latency_frameloss_test_config.model_dump()
 
     async def run_prbs_test(self):
-        await prbs_test(self.tester_obj, self.port_pair_list, self.report_filename, self.logger_name, self.prbs_test_config)
+        await prbs_test(self.tester_obj, self.port_pair_list, self.report_filepathname, self.logger_name, self.prbs_test_config)
 
     async def run_fec_test(self):
-        await fec_test(self.tester_obj, self.port_pair_list, self.report_filename, self.logger_name, self.prbs_test_config)
+        await fec_test(self.tester_obj, self.port_pair_list, self.report_filepathname, self.logger_name, self.prbs_test_config)
 
     async def run_latency_frame_loss_test(self):
-        await latency_frame_loss_test(self.tester_obj, self.port_pair_list, self.report_filename, self.logger_name, self.latency_frameloss_test_config)
+        await latency_frame_loss_test(self.tester_obj, self.port_pair_list, self.report_filepathname, self.logger_name, self.latency_frameloss_test_config)
 
     async def get_siv_sample(self):
-        await siv_info(self.tester_obj, self.port_pair_list, self.logger_name, should_histogram=False)
+        await siv_info(self.tester_obj, self.port_pair_list, self.logger_name, should_histogram=False, path=self.path)
 
     async def get_siv_histogram(self):
-        await siv_info(self.tester_obj, self.port_pair_list, self.logger_name, should_histogram=True)
+        await siv_info(self.tester_obj, self.port_pair_list, self.logger_name, should_histogram=True, path=self.path)
 
     async def get_tcvr_basic_info(self):
-        await tcvr_basic_info(self.tester_obj, self.port_pair_list, self.report_filename, self.logger_name)
+        await tcvr_basic_info(self.tester_obj, self.port_pair_list, self.report_filepathname, self.logger_name)
 
     async def change_module_media_tg(self):
         await change_module_media(self.tester_obj, self.module_list, self.module_media_tga, self.port_speed, self.logger_name,)
 
     async def change_module_media_l1(self):
         await change_module_media(self.tester_obj, self.module_list, self.module_media_l1, self.port_speed, self.logger_name,)
+
+    async def get_tx_tap_info(self):
+        await tx_tap_info(self.tester_obj, self.port_pair_list, self.report_filepathname, self.logger_name)
     
     async def run(self):
         await self.connect()
+        await self.create_report_dir()
         await self.change_module_media_l1()
         await self.get_tcvr_basic_info()
+        await self.get_tx_tap_info()
         await self.run_prbs_test()
         await self.run_fec_test()
         await self.get_siv_sample()
