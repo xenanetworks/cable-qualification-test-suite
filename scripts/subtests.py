@@ -621,7 +621,7 @@ async def tx_tap_info(tester_obj: testers.L23Tester, port_pair_list: List[dict],
             pre_db = resp.pre/10
             main_mv = resp.main
             post_db = resp.post/10
-            logger.info(f"Read (level):  pre3 = {pre3_db}dB, pre2 = {pre2_db}dB, pre = {pre_db}dB, main = {main_mv}mV, post = {post_db}dB")
+            logger.info(f"Lane {i}:  pre3 = {pre3_db}dB, pre2 = {pre2_db}dB, pre = {pre_db}dB, main = {main_mv}mV, post = {post_db}dB")
             report_gen.record_data(port_name=f"Port {tx_port_obj.kind.module_id}/{tx_port_obj.kind.port_id}", lane=i, pre3_db=pre3_db, pre2_db=pre2_db, pre_db=pre_db, main_mv=main_mv, post_db=post_db)
 
     report_gen.generate_report(report_filename)

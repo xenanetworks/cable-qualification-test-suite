@@ -183,14 +183,14 @@ class TXTapReportGenerator:
         time_str = time.strftime("%H:%M:%S", time.localtime())
         if port_name not in self.database:
             self.database[port_name] = []
-            self.database[port_name].append({
-                "Lane": lane,
-                "Pre3 (dB)": pre3_db,
-                "Pre2 (dB)": pre2_db,
-                "Pre (dB)": pre_db,
-                "Main (mV)": main_mv,
-                "Post (dB)": post_db,
-            })
+        self.database[port_name].append({
+            "Lane": lane,
+            "Pre3 (dB)": pre3_db,
+            "Pre2 (dB)": pre2_db,
+            "Pre (dB)": pre_db,
+            "Main (mV)": main_mv,
+            "Post (dB)": post_db,
+        })
     
     def generate_report(self, filename: str) -> None:
         headers = [
