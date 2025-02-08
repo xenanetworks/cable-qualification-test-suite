@@ -335,7 +335,7 @@ async def latency_frame_loss_test(tester_obj: testers.L23Tester, port_pair_list:
                     stream_obj.enable.set_on(),
                     stream_obj.comment.set(comment=f"Latency and Frame Loss Test Stream ({stream_index}/{tpld_id})"),
                     stream_obj.payload.content.set(payload_type=enums.PayloadType.INCREMENTING, hex_data=Hex("DEAD")),
-                    stream_obj.rate.pps.set(stream_rate_pps=int(1_000_000*traffic_rate)),
+                    stream_obj.rate.fraction.set(stream_rate_ppm=int(1_000_000*traffic_rate)),
                     stream_obj.packet.length.set(length_type=enums.LengthType.FIXED, min_val=packet_size, max_val=packet_size),
                     stream_obj.packet.header.protocol.set(segments=[
                         enums.ProtocolOption.ETHERNET]),
@@ -406,7 +406,7 @@ async def latency_frame_loss_test(tester_obj: testers.L23Tester, port_pair_list:
 #---------------------------
 # siv_info
 #---------------------------
-async def siv_info(tester_obj: testers.L23Tester, port_pair_list: List[dict], logger_name: str, should_histogram: bool) -> None:
+async def siv_info(tester_obj: testers.L23Tester, port_pair_list: List[dict], logger_name: str, should_histogram: bool, path: str) -> None:
 
     # Get logger
     logger = logging.getLogger(logger_name)
@@ -548,10 +548,12 @@ async def siv_info(tester_obj: testers.L23Tester, port_pair_list: List[dict], lo
                     siv_subplots[i].axhline(y, color='black', linestyle='dashed', linewidth=0.1)
                     siv_subplots[i].text(siv_subplots[i].get_xlim()[1] + 0.1, y, f'L0={y}', fontsize="small")
 
-                if should_histogram:    
-                    plt.savefig(f"port_{port_obj.kind.module_id}{port_obj.kind.port_id}_siv_sample.png")
+                if should_histogram:
+                    filename = f"siv_hist_p{port_obj.kind.module_id}{port_obj.kind.port_id}.png"
+                    plt.savefig(os.path.join(path, filename))
                 else:
-                    plt.savefig(f"port_{port_obj.kind.module_id}{port_obj.kind.port_id}_siv_histogram.png")
+                    filename = f"siv_sample_p{port_obj.kind.module_id}{port_obj.kind.port_id}.png"
+                    plt.savefig(os.path.join(path, filename))
                 plt.close(fig)
 
                 break
@@ -588,3 +590,38 @@ async def change_module_media(tester_obj: testers.L23Tester, module_list: List[i
         await _module.cfp.config.set(portspeed_list=_port_speed_config)
 
     logger.info(f"=============== Done ====================")
+
+#---------------------------
+# tx_tap_info
+#---------------------------
+async def tx_tap_info(tester_obj: testers.L23Tester, port_pair_list: List[dict], report_filename: str, logger_name: str) -> None:
+
+    # Init report generator
+    report_gen = TXTapReportGenerator()
+    report_gen.chassis = tester_obj.info.host
+
+    # Get logger
+    logger = logging.getLogger(logger_name)
+
+    # Establish connection to a Xena tester using Python context manager
+    # The connection will be automatically terminated when it is out of the block
+    logger.info(f"=============== TX Tap Info ====================")
+    logger.info(f"{'Tester:':<20}{tester_obj.info.host}")
+    logger.info(f"{'Username:':<20}{tester_obj.session.owner_name}")
+
+    tx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester_obj, port_pair_list, "tx")
+    for tx_port_obj in tx_port_list:
+        resp = await tx_port_obj.capabilities.get()
+        serdes_cnt = resp.serdes_count
+        for i in range(serdes_cnt):
+            # get LEVEL
+            resp = await tx_port_obj.l1.serdes[i].medium.tx.level.get()
+            pre3_db = resp.pre3/10
+            pre2_db = resp.pre2/10
+            pre_db = resp.pre/10
+            main_mv = resp.main
+            post_db = resp.post/10
+            logger.info(f"Read (level):  pre3 = {pre3_db}dB, pre2 = {pre2_db}dB, pre = {pre_db}dB, main = {main_mv}mV, post = {post_db}dB")
+            report_gen.record_data(port_name=f"Port {tx_port_obj.kind.module_id}/{tx_port_obj.kind.port_id}", lane=i, pre3_db=pre3_db, pre2_db=pre2_db, pre_db=pre_db, main_mv=main_mv, post_db=post_db)
+
+    report_gen.generate_report(report_filename)

@@ -11,6 +11,7 @@ from xoa_driver import enums
 from xoa_driver.hlfuncs import mgmt
 import logging
 from typing_extensions import List, Any
+import time, os
 
 def get_port_list(tester_obj: testers.L23Tester, port_pair_list: List[dict], key_str: str) -> List[Any]:
     _port_obj_list = []
@@ -70,7 +71,7 @@ def convert_prbs_lock_status(original_data: enums.PRBSLockStatus) -> str:
     else:
         return "Unstable"
 
-def hex_to_ascii(hex_str):
+def hex_to_ascii(hex_str) -> str:
     ascii_str = ""
     for i in range(0, len(hex_str), 2):
         byte = int(hex_str[i:i+2], 16)
@@ -80,11 +81,24 @@ def hex_to_ascii(hex_str):
             ascii_str += "?"
     return ascii_str
 
-def beautify_hex(hex_str):
+def beautify_hex(hex_str) -> str:
     b_hex_str = ""
     for i in range(0, len(hex_str), 2):
         b_hex_str = b_hex_str + hex_str[i:i+2] + " "
     return b_hex_str
+
+def hex_to_filtered_ascii(hex_str) -> str:
+    allowed_ascii_codes = [i for i in range(48,58)]
+    allowed_ascii_codes.extend([i for i in range(65,91)])
+    allowed_ascii_codes.extend([i for i in range(97,123)])
+    ascii_str = ""
+    for i in range(0, len(hex_str), 2):
+        byte = int(hex_str[i:i+2], 16)
+        if byte in allowed_ascii_codes:
+            ascii_str += chr(byte)
+        else:
+            ascii_str += ""
+    return ascii_str
 
 async def get_tcvr_vendor_name(port_obj: ports.Z800FreyaPort) -> dict:
     description = "Vendor Name"
@@ -98,10 +112,12 @@ async def get_tcvr_vendor_name(port_obj: ports.Z800FreyaPort) -> dict:
     _raw_value = resp.value
     _acsii_value = hex_to_ascii(_raw_value)
     _hex_value = beautify_hex(_raw_value)
+    _filtered_acsii_value = hex_to_filtered_ascii(_raw_value)
     result = {
         "description": description,
         "hex_value": _hex_value,
-        "acsii_value": _acsii_value
+        "acsii_value": _acsii_value,
+        "filtered_acsii_value": _filtered_acsii_value
     }
     return result
 
@@ -117,10 +133,12 @@ async def get_tcvr_vendor_pn(port_obj: ports.Z800FreyaPort) -> dict:
     _raw_value = resp.value
     _acsii_value = hex_to_ascii(_raw_value)
     _hex_value = beautify_hex(_raw_value)
+    _filtered_acsii_value = hex_to_filtered_ascii(_raw_value)
     result = {
         "description": description,
         "hex_value": _hex_value,
-        "acsii_value": _acsii_value
+        "acsii_value": _acsii_value,
+        "filtered_acsii_value": _filtered_acsii_value
     }
     return result
 
@@ -136,10 +154,12 @@ async def get_tcvr_vendor_sn(port_obj: ports.Z800FreyaPort) -> dict:
     _raw_value = resp.value
     _acsii_value = hex_to_ascii(_raw_value)
     _hex_value = beautify_hex(_raw_value)
+    _filtered_acsii_value = hex_to_filtered_ascii(_raw_value)
     result = {
         "description": description,
         "hex_value": _hex_value,
-        "acsii_value": _acsii_value
+        "acsii_value": _acsii_value,
+        "filtered_acsii_value": _filtered_acsii_value
     }
     return result
 
@@ -169,3 +189,18 @@ async def get_tcvr_cable_length(port_obj: ports.Z800FreyaPort) -> dict:
         "acsii_value": _acsii_value
     }
     return result
+
+async def create_report_dir(tester_obj: testers.L23Tester, port_pair_list: List[dict]) -> str:
+    tx_port_list: List[ports.Z800FreyaPort] = get_port_list(tester_obj, port_pair_list, "tx")
+    port_obj = tx_port_list[0]
+    # read vendor name and pn but only keep the good characters
+    tmp = await get_tcvr_vendor_name(port_obj)
+    filtered_vendor_name = tmp["filtered_acsii_value"]
+    tmp = await get_tcvr_vendor_pn(port_obj)
+    filtered_vendor_pn = tmp["filtered_acsii_value"]
+    datetime = time.strftime("%Y%m%d_%H%M%S", time.localtime())
+    path = filtered_vendor_name + "_" + filtered_vendor_pn + "_" + datetime
+    if not os.path.exists(path):
+        os.makedirs(path)
+    return path
+

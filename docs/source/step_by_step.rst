@@ -50,7 +50,7 @@ Run Test
         module_media_l1: "QSFPDD800_ANLT"
         port_pair_list:
             - tx: "3/0"
-            rx: "6/0"
+              rx: "6/0"
         csv_report_filename: "cable_qualification_test_report.csv"
         log_filename: "cable_qualification_test.log"
         prbs_test_config:
