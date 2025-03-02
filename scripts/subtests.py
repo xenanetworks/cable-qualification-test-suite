@@ -12,7 +12,7 @@ from xoa_driver import utils
 from xoa_driver.hlfuncs import mgmt, headers
 from xoa_driver.misc import Hex
 import logging
-from typing_extensions import List, Any
+from typing import List, Any
 from misc import *
 from reportgen import *
 from decimal import Decimal, getcontext
