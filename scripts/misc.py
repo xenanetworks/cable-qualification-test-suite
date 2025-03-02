@@ -10,7 +10,7 @@ from xoa_driver import ports
 from xoa_driver import enums
 from xoa_driver.hlfuncs import mgmt
 import logging
-from typing_extensions import List, Any
+from typing import List, Any
 import time, os
 
 def get_port_list(tester_obj: testers.L23Tester, port_pair_list: List[dict], key_str: str) -> List[Any]:

@@ -4,7 +4,7 @@ Step-by-Step
 Prerequisite
 -------------
 
-1. Make sure you have ``Python >= 3.11`` installed on your system. If not, download and install it from `Python.org <https://www.python.org/downloads/>`_.
+1. Make sure you have ``Python >= 3.9`` installed on your system. If not, download and install it from `Python.org <https://www.python.org/downloads/>`_.
 2. Make sure you have pip installed on your system. This allows you to install Python packages from the Python Package Index (PyPI). To test if you have pip installed, run the following command: ``pip list``. If you have pip installed, you will see a list of installed packages. 
 3. Download the scripts from `cable-qualification-test-suite/scripts/ <https://github.com/xenanetworks/cable-qualification-test-suite/tree/main/scripts>`_
 
@@ -16,14 +16,14 @@ Prerequisite
 
 3. Install the required packages using the following command: ``pip install -r requirements.txt``. This will install the following packages:
 
-    * ``xoa-driver>=2.9.3``
+    * ``tdl-xoa-driver>=1.1.0``
     * ``matplotlib>=3.9.2``
     * ``pyyaml>=6.0.1``
-    * ``pydantic>=2.10.6``
+    * ``pydantic>=2.0``
 
 .. seealso::
     
-    Read `install xoa-driver <https://docs.xenanetworks.com/projects/xoa-python-api/en/latest/getting_started/index.html>`_ for details about installing ``xoa-driver``.
+    Read `install tdl-xoa-driver <https://docs.xenanetworks.com/projects/tdl-xoa-driver/en/latest/getting_started/index.html>`_ for details about installing ``tdl-xoa-driver``.
 
 .. important::
 
