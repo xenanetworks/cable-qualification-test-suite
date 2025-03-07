@@ -1,0 +1,44 @@
+test_config:
+  username: "CableQualificationTest"
+  topology:
+    - tx:
+        chassis_ip: "10.165.153.101"
+        password: "xena"
+        tcp_port: 22606
+        port_idx: "3/0"
+        port_speed: "1x800G"
+        module_media: "OSFP800"
+        host_tx_eq:
+          pre3: 0
+          pre2: 0
+          pre: 12
+          main: 42
+          post: 0
+      rx:
+        chassis_ip: "10.165.153.101"
+        password: "xena"
+        tcp_port: 22606
+        port_idx: "3/0"
+        port_speed: "1x800G"
+        module_media: "OSFP800"
+        host_tx_eq:
+          pre3: 0
+          pre2: 0
+          pre: 12
+          main: 42
+          post: 0
+  csv_report_filename: "cable_qualification_test_report.csv"
+  log_filename: "cable_qualification_test.log"
+  prbs_test_config:
+    duration: 10
+    polynomial: "PRBS31"
+  fec_test_config:
+    duration: 10
+  latency_frameloss_test_config:
+    duration: 10
+    start_rate: 0.2
+    end_rate: 1.0
+    step_rate: 0.2
+    packet_sizes:
+      - 64
+      - 1518
