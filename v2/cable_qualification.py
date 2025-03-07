@@ -54,8 +54,8 @@ class CableQualificationTest:
             )
     
     @property
-    def chassis_ip(self):
-        return self.test_config.chassis_ip
+    def topology(self):
+        return self.test_config.topology
     
     @property
     def username(self):
@@ -70,9 +70,11 @@ class CableQualificationTest:
         return self.test_config.tcp_port
     
     @property
-    def port_pair_list(self):
+    async def port_pair_list(self):
         __list = []
-        for port_pair in self.test_config.port_pair_list:
+        for port_pair in self.test_config.topology:
+            
+
             __list.append(port_pair.model_dump())
         return __list
     
@@ -86,11 +88,11 @@ class CableQualificationTest:
     
     @property
     def module_media_tga(self):
-        return enums.MediaConfigurationType[self.test_config.module_media_tga]
+        return enums.MediaConfigurationType[self.test_config.module_media]
     
     @property
     def module_media_l1(self):
-        return enums.MediaConfigurationType[self.test_config.module_media_l1]
+        return enums.MediaConfigurationType[self.test_config.module_media+"_ANLT"]
     
     @property
     def report_filepathname(self):
