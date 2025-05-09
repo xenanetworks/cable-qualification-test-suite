@@ -1,17 +1,17 @@
 Importance of Loading TX Equalization Settings
 ==============================================
 
-Xena Cable Qualification Test Methodology doens't aim to optimize the TX equalization settings on the host or the module side. Optimization should be done separately by the test engineer before starting the benchmarking with the test suite.
+Xena Cable Qualification Test Methodology doens't aim to optimize the TX equalization settings on the host or the module. Optimization should be done separately by the test engineer before starting the benchmarking with the test suite.
 
 However, it is important to load the TX equalization settings to maintain high signal integrity and optimize the performance of your cable system. These settings help to compensate for various transmission impairments, ensuring that your system can handle different cables and environments effectively.
 
 
-Host Side TX Equalization Settings
+Host TX Equalization Settings
 ----------------------------------
 
 * Signal Integrity (SI) Performance
 
-Properly configuring the host side TX equalization settings is crucial for maintaining signal integrity. These settings help to compensate for signal loss and distortion that occur during transmission, ensuring that the signal remains clear and robust over longer distances.
+Properly configuring the host TX equalization settings is crucial for maintaining signal integrity. These settings help to compensate for signal loss and distortion that occur during transmission, ensuring that the signal remains clear and robust over longer distances.
 
 * Optimizing Transmission
 
@@ -21,12 +21,12 @@ By adjusting the equalization settings, you can optimize the transmitter's perfo
 
 Different cables and transmission environments may require different equalization settings. Loading the appropriate settings allows the system to adapt to various conditions, enhancing reliability and performance.
 
-Module Side TX Equalization Settings
+Module TX Equalization Settings
 ------------------------------------
 
 * Compatibility and Interoperability
 
-Ensuring that the module side TX equalization settings are correctly loaded is essential for compatibility with different host systems and cables. This helps in achieving consistent performance across various setups.
+Ensuring that the module TX equalization settings are correctly loaded is essential for compatibility with different host systems and cables. This helps in achieving consistent performance across various setups.
 
 * Reducing Interference
 
@@ -34,7 +34,7 @@ Proper equalization can mitigate the effects of crosstalk and other forms of int
 
 * Enhanced Signal Quality
 
-By fine-tuning the module side equalization settings, you can enhance the overall signal quality, leading to more reliable and efficient data transmission.
+By fine-tuning the module equalization settings, you can enhance the overall signal quality, leading to more reliable and efficient data transmission.
 
 
 Automated Transceiver Equalization Optimization

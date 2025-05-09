@@ -29,8 +29,8 @@ This methodology provides essential data for informed cable selection and optimi
     :maxdepth: 1
     :caption: Table of Content
 
-    step_by_step
     introduction
+    step_by_step
     load_tx_eq
     tcvr_info
     read_tx_eq

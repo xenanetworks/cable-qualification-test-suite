@@ -1,4 +1,4 @@
-Transceiver Information
+Module Information
 ===========================================
 
 The Xena Cable Qualification Test Methodology includes a feature that reads and records detailed transceiver information. This information is crucial for comparing different cables and selecting the best one for your needs. The key transceiver details captured include:
@@ -17,4 +17,4 @@ Output Example
     :alt: Transceiver Information Example
     :target: images/tcvr_info_image.png
 
-    Transceiver Information Example
+    Module Information Example
