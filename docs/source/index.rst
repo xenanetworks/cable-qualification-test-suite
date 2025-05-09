@@ -2,6 +2,10 @@
 Xena Cable Qualification Test Methodology
 =====================================================
 
+:Version: |version|
+:Release: |release|
+:Date: |today|
+
 Welcome to the Xena Cable Qualification Test Methodology. This automated framework evaluates cable quality and performance through:
 
 * PRBS-based BER Testing

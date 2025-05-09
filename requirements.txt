@@ -1,4 +1,4 @@
-tdl-xoa-driver>=1.1.0
+tdl-xoa-driver>=1.2.0
 matplotlib>=3.9.2
 pyyaml>=6.0.1
 pydantic>=2.0

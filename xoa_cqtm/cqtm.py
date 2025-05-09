@@ -32,18 +32,32 @@ class XenaCableQualification:
         self.load_test_config(test_config_file)
 
     async def connect(self):
+        """Connect to the Xena chassis and create a tester object.
+        """
         self.tester_obj = await testers.L23Tester(host=self.chassis_ip, username=self.username, password=self.password, port=self.tcp_port, enable_logging=self.enable_comm_trace)
 
     async def disconnect(self):
+        """Disconnect from the Xena chassis.
+        """
         await self.tester_obj.session.logoff()
+        logger = logging.getLogger(self.logger_name)
+        logger.info(f"Gracefully disconnect from tester")
+        logger.info(f"Bye!")
 
     def load_test_config(self, test_config_file: str):
+        """Load the test configuration from a YAML file, and validate it using the CableQualificationTestConfig model.
+
+        :param test_config_file: test configuration file path
+        :type test_config_file: str
+        """
         with open(test_config_file, "r") as f:
             test_config_dict = yaml.safe_load(f)
             test_config_value = json.dumps(test_config_dict["test_config"])
             self.test_config = CableQualificationTestConfig.model_validate_json(test_config_value)
 
     async def create_report_dir(self):
+        """Create a report directory for the test results. The directory is named with the current date and time, and is created in the same directory as the test configuration file.
+        """
         self.path = await create_report_dir(self.tester_obj, self.port_pair_list)
         # configure basic logger
         logging.basicConfig(
@@ -126,45 +140,69 @@ class XenaCableQualification:
         return self.test_config.module_tx_eq.model_dump()
 
     async def run_prbs_test(self):
+        """Run the PRBS test on the specified port pairs. The test is configured using the prbs_test_config property.
+        """
         await prbs_test(self.tester_obj, self.port_pair_list, self.report_filepathname, self.logger_name, self.prbs_test_config)
 
     async def run_fec_test(self):
+        """Run the FEC test on the specified port pairs. The test is configured using the fec_test_config property.
+        """
         await fec_test(self.tester_obj, self.port_pair_list, self.report_filepathname, self.logger_name, self.prbs_test_config)
 
     async def run_latency_frame_loss_test(self):
+        """Run the latency and frame loss test on the specified port pairs. The test is configured using the latency_frameloss_test_config property.
+        """
         await latency_frame_loss_test(self.tester_obj, self.port_pair_list, self.report_filepathname, self.logger_name, self.latency_frameloss_test_config)
 
     async def get_siv_sample(self):
+        """Get the Signal Integrity Verification (SIV) sample for the specified port pairs. The SIV test is configured using the signal_integrity_test_config property.
+        """
         await signal_integrity_info(self.tester_obj, self.port_pair_list, self.logger_name, should_histogram=False, path=self.path)
 
     async def get_siv_histogram(self):
+        """Get the Signal Integrity Verification (SIV) histogram for the specified port pairs. The SIV test is configured using the signal_integrity_test_config property.
+        """
         await signal_integrity_info(self.tester_obj, self.port_pair_list, self.logger_name, should_histogram=True, path=self.path)
 
     async def get_tcvr_basic_info(self):
+        """Get the TCVR basic information for the specified port pairs. The TCVR test is configured using the tcvr_basic_info_test_config property.
+        """
         await tcvr_basic_info(self.tester_obj, self.port_pair_list, self.report_filepathname, self.logger_name)
 
-    async def change_module_media_tg(self):
+    async def change_test_module_media_tg(self):
+        """Change the module media type to TGA for the specified port pairs. The media type is configured using the module_media_tga property.
+        """
         await change_module_media(self.tester_obj, self.module_list, self.module_media_tga, self.port_speed, self.logger_name,)
 
-    async def change_module_media_l1(self):
+    async def change_test_module_media_l1(self):
+        """Change the module media type to L1 for the specified port pairs. The media type is configured using the module_media_l1 property.
+        """
         await change_module_media(self.tester_obj, self.module_list, self.module_media_l1, self.port_speed, self.logger_name,)
 
     async def read_host_tx_eq(self):
+        """Read the host TX equalization settings for the specified port pairs.
+        """
         await read_host_tx_eq(self.tester_obj, self.port_pair_list, self.report_filepathname, self.logger_name)
 
     async def load_host_tx_eq(self):
+        """Load the host TX equalization settings for the specified port pairs. The TX equalization settings are configured using the host_tx_eq property.
+        """
         await load_host_tx_eq(self.tester_obj, self.port_pair_list, self.logger_name, self.host_tx_eq)
 
     async def load_module_tx_eq(self):
+        """Load the module TX equalization settings for the specified port pairs. The TX equalization settings are configured using the module_tx_eq property.
+        """
         await load_module_tx_eq(self.tester_obj, self.port_pair_list, self.logger_name, self.module_tx_eq)
 
     async def read_module_tx_eq(self):
+        """Read the module TX equalization settings for the specified port pairs.
+        """
         await read_module_tx_eq(self.tester_obj, self.port_pair_list, self.report_filepathname, self.logger_name)
     
     async def run(self):
         await self.connect()
         await self.create_report_dir()
-        await self.change_module_media_l1()
+        await self.change_test_module_media_l1()
         await self.get_tcvr_basic_info()
         await self.load_host_tx_eq()
         await self.read_host_tx_eq()
@@ -174,7 +212,7 @@ class XenaCableQualification:
         await self.run_fec_test()
         await self.get_siv_sample()
         await self.get_siv_histogram()
-        await self.change_module_media_tg()
+        await self.change_test_module_media_tg()
         await self.load_host_tx_eq()
         await self.load_module_tx_eq()
         await self.run_latency_frame_loss_test()
