@@ -1,13 +1,18 @@
 Introduction
 ==============
 
-Welcome to the Xena Cable Qualification Test Methodology. This advanced methodology is meticulously designed to provide an automated framework for evaluating the quality and performance of cables through a comprehensive set of measurements. This test consists:
+Welcome to the Xena Cable Qualification Test. This methodology is meticulously designed to provide an automated test for evaluating the quality and performance of cables through a comprehensive set of measurements.
+
+This test consists:
 
 * **PRBS-based BER Testing**: Utilizing different PRBS patterns to assess the bit error rate, stressing the equalization settings, and ensuring robust signal integrity.
 * **Pre-FEC and Post-FEC BER Testing**: Measuring bit error rates before and after error correction to gain a comprehensive understanding of cable performance.
 * **Signal Integrity**: Verifying the integrity of the signal over the cable to minimize degradation and interference. Saving visual representations of signal quality for thorough analysis and troubleshooting.
 * **Latency and Frame Loss Testing**: Conducting tests in accordance with RFC 2544 to evaluate latency and frame loss, ensuring reliable and efficient data transmission.
+
+In addition to the core testing functionalities, the Xena Cable Qualification Test also includes the following into reports for enhanced analysis:
+
 * **Module Information **: Capturing detailed transceiver module information, including vendor name, part number, serial number, and cable length, to facilitate easy comparison of test reports.
 * **TX Equalization**: Logging both host and module TX equalizer settings to analyze and optimize performance.
 
-The Xena Cable Qualification Test Methodology ensures that you have all the necessary data to make informed decisions about cable selection and optimization. Whether you are performing initial qualification, routine maintenance, or post-installation verification, this test suite provides a thorough and reliable assessment of cable quality.
+The Xena Cable Qualification Test ensures that you have all the necessary data to make informed decisions about cable selection and optimization. Whether you are performing initial qualification, routine maintenance, or post-installation verification, this test suite provides a thorough and reliable assessment of cable quality.
