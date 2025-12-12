@@ -12,7 +12,7 @@ This test consists:
 
 In addition to the core testing functionalities, the Xena Cable Qualification Test also includes the following into reports for enhanced analysis:
 
-* **Module Information **: Capturing detailed transceiver module information, including vendor name, part number, serial number, and cable length, to facilitate easy comparison of test reports.
+* **Module Information**: Capturing detailed transceiver module information, including vendor name, part number, serial number, and cable length, to facilitate easy comparison of test reports.
 * **TX Equalization**: Logging both host and module TX equalizer settings to analyze and optimize performance.
 
 The Xena Cable Qualification Test ensures that you have all the necessary data to make informed decisions about cable selection and optimization. Whether you are performing initial qualification, routine maintenance, or post-installation verification, this test suite provides a thorough and reliable assessment of cable quality.
