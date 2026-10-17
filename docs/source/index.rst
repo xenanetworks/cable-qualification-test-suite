@@ -1,5 +1,5 @@
 =====================================================
-Xena Cable Qualification Test
+Teledyne LeCroy Interconnect Performance Qualification Methodology
 =====================================================
 
 :Version: |version|
