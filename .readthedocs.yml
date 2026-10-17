@@ -23,7 +23,9 @@ sphinx:
   fail_on_warning: false
 
 # Build all format
-formats: all
+formats:
+  - pdf
+  - htmlzip
 
 # Optionally declare the Python requirements required to build your docs
 python:
