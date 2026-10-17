@@ -170,3 +170,4 @@ cython_debug/
 .pypirc
 **/.DS_Store
 **__test__**
+.vscode/settings.json
