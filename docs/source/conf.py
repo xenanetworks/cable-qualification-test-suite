@@ -45,10 +45,10 @@ def get_short_version(rel_path):
 company = f"Teledyne LeCroy Xena"
 year = datetime.datetime.today().year
 month = datetime.datetime.today().month
-project = f"Cable Qualification Test"
+project = f"Teledyne LeCroy Interconnect Performance Qualification Methodology"
 copyright = f"{year}, {company}"
 author = company
-title = f"Cable Qualification Test"
+title = f"Teledyne LeCroy Interconnect Performance Qualification Methodology"
 output_basename = f"xena_cqtm_doc"
 
 # The full version, including alpha/beta/rc tags.
