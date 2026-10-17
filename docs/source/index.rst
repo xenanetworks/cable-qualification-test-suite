@@ -1,12 +1,12 @@
 =====================================================
-Xena Cable Qualification Test Methodology
+Teledyne LeCroy Interconnect Performance Qualification Methodology
 =====================================================
 
 :Version: |version|
 :Release: |release|
 :Date: |today|
 
-Welcome to the Xena Cable Qualification Test Methodology. This automated framework evaluates cable quality and performance through:
+Welcome to the Teledyne LeCroy Interconnect Performance Qualification Methodology. This automated framework evaluates cable quality and performance through:
 
 * PRBS-based BER Testing
 * Pre-FEC and Post-FEC BER Measurement
