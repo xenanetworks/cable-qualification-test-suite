@@ -3,7 +3,7 @@ Introduction
 
 As Ethernet data rates increase to 400G, 800G, and beyond, validating the signal integrity and transmission performance of high-speed interconnects has become increasingly important. Cable and interconnect manufacturers need reliable and repeatable test methods to evaluate their products under different operating conditions.
 
-Teledyne LeCroy Cable Performance Qualification Methodology provides an automated test framework for evaluating high-speed cable and interconnect performance using Xena’s Z800 Freya Ethernet test equipment.
+Teledyne LeCroy Interconnect Performance Qualification Methodology provides an automated test framework for evaluating high-speed cable and interconnect performance using Xena’s Z800 Freya Ethernet test equipment.
 
 The methodology combines physical-layer measurements with Ethernet frame transmission tests, including:
 
